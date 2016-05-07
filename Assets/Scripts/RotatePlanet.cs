@@ -10,7 +10,7 @@ public class RotatePlanet : MonoBehaviour
     private Camera mainCam = null;
     private float radius = 0;
     private float horInput = 0;
-    private bool onWorldMap = false;
+    private bool onWorldMap = true;
     private Coroutine switchView = null;
 
     // Use this for initialization
@@ -18,13 +18,17 @@ public class RotatePlanet : MonoBehaviour
     {
         radius = transform.localScale.y / 2;//GetComponent<CircleCollider2D>().radius;
         mainCam = Camera.main;
+        SwitchWorldMap();
     }
 
     // Update is called once per frame
     private void Update()
     {
         if (!onWorldMap && (horInput = Input.GetAxis("Horizontal")) != 0)
-            transform.Rotate(0, 0, horInput * rotationSpeed * Time.deltaTime / radius, Space.Self);
+        {
+            GetComponent<Rigidbody2D>().MoveRotation(GetComponent<Rigidbody2D>().rotation + horInput * rotationSpeed * Time.deltaTime / radius);
+            //transform.Rotate(0, 0, horInput * rotationSpeed * Time.deltaTime / radius, Space.Self);
+        }
 
         if (Input.GetKeyDown(KeyCode.M))
         {
@@ -50,19 +54,19 @@ public class RotatePlanet : MonoBehaviour
         float initialSize = mainCam.orthographicSize;
 
         Quaternion targetRot = Quaternion.identity;
-        Vector3 targetPos = Vector3.zero;
-        float targetSize = 1.5f;
+        Vector3 targetPos = new Vector3(1, 0, -10);
+        float targetSize = 2;
 
         if (onWorldMap)
         {
             onWorldMap = false;
+            targetPos = new Vector3(1, 3, -10);
         }
         else
         {
             onWorldMap = true;
             targetRot = transform.rotation;
-            targetPos = new Vector3(0, 3, -10);
-            targetSize = 4;
+            targetSize = 6;
         }
 
         while (percentDone < 1)
@@ -73,5 +77,8 @@ public class RotatePlanet : MonoBehaviour
             yield return new WaitForEndOfFrame();
             percentDone += Time.deltaTime;
         }
+        mainCam.transform.rotation = targetRot;
+        mainCam.transform.position = targetPos;
+        mainCam.orthographicSize = targetSize;
     }
 }
