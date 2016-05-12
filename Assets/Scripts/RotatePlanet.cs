@@ -54,13 +54,13 @@ public class RotatePlanet : MonoBehaviour
         float initialSize = mainCam.orthographicSize;
 
         Quaternion targetRot = Quaternion.identity;
-        Vector3 targetPos = new Vector3(1, 0, -10);
+        Vector3 targetPos = new Vector3(0, 0, -10);
         float targetSize = 2;
 
         if (onWorldMap)
         {
             onWorldMap = false;
-            targetPos = new Vector3(1, 3, -10);
+            targetPos = new Vector3(0, 3, -10);
         }
         else
         {
